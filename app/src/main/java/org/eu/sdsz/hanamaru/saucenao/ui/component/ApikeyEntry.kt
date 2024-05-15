@@ -27,7 +27,8 @@ fun ApikeyEntry(curKey: String, onSave: (String)->Unit) {
     Column(
         horizontalAlignment = Alignment.End
     ) {
-        PasswordField(value = curKey, onValueChange = { apiKey = it })
+        // value should be apiKey to trigger recomposition
+        PasswordField(value = apiKey, onValueChange = { apiKey = it })
         Button(onClick = { onSave(apiKey) }) {
             Text(text = "Save")
         }
