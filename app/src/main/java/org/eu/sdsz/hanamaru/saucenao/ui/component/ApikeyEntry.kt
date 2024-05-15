@@ -20,6 +20,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
+fun ApikeyEntry(curKey: String, onSave: (String)->Unit) {
+    var apiKey by rememberSaveable {
+        mutableStateOf(curKey)
+    }
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        PasswordField(value = curKey, onValueChange = { apiKey = it })
+        Button(onClick = { onSave(apiKey) }) {
+            Text(text = "Save")
+        }
+    }
+}
+
+@Composable
 fun PasswordField(value: String, onValueChange: (String)->Unit) {
     var visible by rememberSaveable {
         mutableStateOf(false)
@@ -38,4 +53,10 @@ fun PasswordField(value: String, onValueChange: (String)->Unit) {
             }
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewApikeyEntry() {
+    ApikeyEntry(curKey = "myKey") {}
 }
