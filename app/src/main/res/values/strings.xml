@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SauceNAO</string>
+    <string name="pref_name">preference</string>
+    <string name="pref_field_apiKey">apiKey</string>
 </resources>
