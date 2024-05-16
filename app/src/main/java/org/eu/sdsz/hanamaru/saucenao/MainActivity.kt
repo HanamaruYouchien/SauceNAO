@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import org.eu.sdsz.hanamaru.saucenao.ui.component.ApikeyEntry
+import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
 import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
 
@@ -28,7 +29,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SauceNAOTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
+                AppScreen(curApiKey = viewModel.apiKey) {
+                    viewModel.apiKey = it
                 }
             }
         }
@@ -41,5 +43,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
+        AppScreen("myKey") {}
     }
 }
