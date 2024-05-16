@@ -15,7 +15,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 
 @Composable
-fun ImagePicker(onSearch: ()->Unit) {
+fun ImagePicker(onSelectImage: ()->Unit, onSearch: ()->Unit) {
     var checked by rememberSaveable {
         mutableStateOf(false)
     }
@@ -44,7 +44,7 @@ fun ImagePicker(onSearch: ()->Unit) {
                 url = it
             }
         } else {
-            ImageFileSelector {}
+            ImageFileSelector(onClick = onSelectImage)
         }
 
         Button(onClick = onSearch) {
@@ -56,5 +56,5 @@ fun ImagePicker(onSearch: ()->Unit) {
 @Preview
 @Composable
 fun PreViewImagePiker() {
-    ImagePicker {}
+    ImagePicker(onSelectImage = {}, onSearch = {})
 }

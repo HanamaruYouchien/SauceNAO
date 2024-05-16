@@ -23,7 +23,7 @@ import org.eu.sdsz.hanamaru.saucenao.data.AppState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(curApiKey: String, onApiKeySave: (String)->Unit) {
+fun AppScreen(curApiKey: String, onApiKeySave: (String)->Unit, onSelectImage: ()->Unit) {
     var state by rememberSaveable {
         mutableStateOf(AppState.MAIN)
     }
@@ -51,7 +51,7 @@ fun AppScreen(curApiKey: String, onApiKeySave: (String)->Unit) {
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when(state) {
-                AppState.MAIN -> { MainScreen { state = AppState.RESULT } }
+                AppState.MAIN -> { MainScreen(onSelectImage = onSelectImage) { state = AppState.RESULT } }
                 AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
                 AppState.RESULT -> { ResultScreen() }
             }
@@ -62,5 +62,5 @@ fun AppScreen(curApiKey: String, onApiKeySave: (String)->Unit) {
 @Preview
 @Composable
 fun PreviewAppScreen() {
-    AppScreen("myKey") {}
+    AppScreen("myKey", {}, {})
 }
