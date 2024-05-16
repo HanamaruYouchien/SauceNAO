@@ -12,10 +12,10 @@ import org.eu.sdsz.hanamaru.saucenao.ui.component.ImagePicker
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(onSearch: ()->Unit) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            ImagePicker()
+            ImagePicker(onSearch = onSearch)
         }
     }
 }
@@ -23,5 +23,5 @@ fun MainScreen() {
 @Preview
 @Composable
 fun PreviewMainScreen() {
-    MainScreen()
+    MainScreen {}
 }

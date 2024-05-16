@@ -51,7 +51,7 @@ fun AppScreen(curApiKey: String, onApiKeySave: (String)->Unit) {
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when(state) {
-                AppState.MAIN -> { MainScreen() }
+                AppState.MAIN -> { MainScreen { state = AppState.RESULT } }
                 AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
                 AppState.RESULT -> { ResultScreen() }
             }
