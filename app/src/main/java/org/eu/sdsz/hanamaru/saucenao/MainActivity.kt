@@ -29,9 +29,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             SauceNAOTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    Preferences(curKey = viewModel.apiKey) {
-                        viewModel.apiKey = it
-                    }
                 }
             }
         }
@@ -40,15 +37,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Preferences(curKey: String, onSave: (String)->Unit) {
-    ApikeyEntry(curKey = curKey, onSave = onSave)
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
-        Preferences(curKey = "myKey") {}
     }
 }
