@@ -1,6 +1,5 @@
 package org.eu.sdsz.hanamaru.saucenao.ui.component
 
-import android.widget.Switch
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
