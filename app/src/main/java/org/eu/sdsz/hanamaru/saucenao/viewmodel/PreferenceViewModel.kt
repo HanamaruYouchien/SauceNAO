@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import org.eu.sdsz.hanamaru.saucenao.R
 
-class PreferenceViewModel(private val app: Application): AndroidViewModel(app) {
+class PreferenceViewModel(app: Application): AndroidViewModel(app) {
     private val PREF_NAME = app.getString(R.string.pref_name)
     private val PREF_FIELD_APIKEY = app.getString(R.string.pref_field_apiKey)
 
