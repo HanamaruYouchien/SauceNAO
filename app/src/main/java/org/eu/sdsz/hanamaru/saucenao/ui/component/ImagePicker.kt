@@ -15,20 +15,13 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 
 @Composable
-fun ImagePicker(onSelectImage: ()->Unit, onSearch: ()->Unit) {
-    var checked by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var url by rememberSaveable {
-        mutableStateOf("")
-    }
-
+fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit) {
     Column {
         Row {
             Text(text = "Select a picture or input URL")
             Switch(
-                checked = checked,
-                onCheckedChange = { checked = it },
+                checked = method,
+                onCheckedChange = onMethodChange,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.secondary,
                     checkedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -39,10 +32,8 @@ fun ImagePicker(onSelectImage: ()->Unit, onSearch: ()->Unit) {
         }
 
 
-        if (checked) {
-            ImageUrlEntry(url = url) {
-                url = it
-            }
+        if (method) {
+            ImageUrlEntry(url = imageUrl, onValueChange = onUrlChange)
         } else {
             ImageFileSelector(onClick = onSelectImage)
         }
@@ -56,5 +47,5 @@ fun ImagePicker(onSelectImage: ()->Unit, onSearch: ()->Unit) {
 @Preview
 @Composable
 fun PreViewImagePiker() {
-    ImagePicker(onSelectImage = {}, onSearch = {})
+    ImagePicker(false, {}, {}, "https://example.com", {}, {})
 }
