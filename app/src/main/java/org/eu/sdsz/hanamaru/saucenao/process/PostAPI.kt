@@ -50,7 +50,7 @@ interface ApiService {
     ): Call<ResponseBody>
 }
 
-fun uploadImage(bitmapdata : ByteArray) : String? {
+fun uploadImage(bitmapdata : ByteArray) : String {
     // Save bitmap to PNG
 //    val bos = ByteArrayOutputStream()
 //    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
@@ -71,7 +71,7 @@ fun uploadImage(bitmapdata : ByteArray) : String? {
             file = body
         )
 
-        var responseBody : String? = "init"
+        var responseBody : String = "init"
         val latch = CountDownLatch(1)
 
 //        call.enqueue(object : Callback<ResponseBody> {
@@ -93,7 +93,7 @@ fun uploadImage(bitmapdata : ByteArray) : String? {
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                responseBody = response.body()?.string()
+                responseBody = response.body()?.string().toString()
             } else {
                 println("response is not successful")
             }
@@ -106,18 +106,25 @@ fun uploadImage(bitmapdata : ByteArray) : String? {
     latch.await()
     println("end uploadImage")
     println("Response: $responseBody")
-    return responseBody
+    if (responseBody != null) {
+        return responseBody
+    } else {
+        return "responseBody is null"
+    }
 }
 
-fun search(imageByteArray : ByteArray) : String? {
+// Primary Search Func
+fun search(imageByteArray : ByteArray) : jsonResult? {
     println("Search Start")
 
-//    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.testimage)
-//    val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-    return uploadImage(imageByteArray)
+    val result : jsonResult?
+    val responseJson = uploadImage(imageByteArray)
+    println("responseJson:$responseJson")
+    result = processjson(responseJson)
+    return result
 }
 
-fun search(bitmap: Bitmap) : String? {
+fun search(bitmap: Bitmap) : jsonResult? {
     println("Search by Bitmap Start")
     // bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
     // Save bitmap to PNG
@@ -127,9 +134,9 @@ fun search(bitmap: Bitmap) : String? {
     return search(bitmapdata)
 }
 
-fun search(Url: String) : String? {
+fun search(Url: String) : jsonResult? {
     println("Search by Url Start")
-    val exampleUrl = "http://123.57.89.45/dedfaf_posts/MC/skin/Murasame.png"
+    val exampleUrl = "http://( ﾟ∀。)/dedfaf_posts/MC/skin/Murasame.png"
 //    thread {
 //        try {
 ////            val url = URL(Url)

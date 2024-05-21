@@ -18,6 +18,7 @@ fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage:
     val exampleBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
     println("return value:${search(exampleBitmap)}")
 
+
     Column {
         Row {
             Text(text = "Select a picture or input URL")
