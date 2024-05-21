@@ -1,21 +1,23 @@
 package org.eu.sdsz.hanamaru.saucenao.ui.component
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import org.eu.sdsz.hanamaru.saucenao.process.search
 
 @Composable
 fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit) {
+
+    val exampleBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+    println("return value:${search(exampleBitmap)}")
+
     Column {
         Row {
             Text(text = "Select a picture or input URL")

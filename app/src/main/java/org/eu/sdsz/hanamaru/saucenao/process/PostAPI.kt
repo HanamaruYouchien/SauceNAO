@@ -11,8 +11,6 @@ import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Multipart
@@ -20,6 +18,8 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 import retrofit2.http.Url
+import java.util.concurrent.CountDownLatch
+import kotlin.concurrent.thread
 
 
 val logging = HttpLoggingInterceptor().apply {
@@ -50,61 +50,84 @@ interface ApiService {
     ): Call<ResponseBody>
 }
 
-fun uploadImage(bitmapdata : ByteArray) {
+fun uploadImage(bitmapdata : ByteArray) : String? {
     // Save bitmap to PNG
 //    val bos = ByteArrayOutputStream()
 //    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
 //    val bitmapdata = bos.toByteArray()
 
-    // Create RequestBody & MultipartBody.Part
-    val requestFile = bitmapdata.toRequestBody("image/png".toMediaTypeOrNull())
-    val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
+        // Create RequestBody & MultipartBody.Part
+        val requestFile = bitmapdata.toRequestBody("image/png".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
 
-    val service = retrofit.create(ApiService::class.java)
-    val call = service.uploadImage(
-        url = "search.php",
-        apiKey = "22d61c4a6cfe2f3496c44ad287daa878614a4fa6",
-        outputType = 2,
-        numres = 1,
-        minsim = 80,
-        dbmask = 999,
-        file = body
-    )
+        val service = retrofit.create(ApiService::class.java)
+        val call = service.uploadImage(
+            url = "search.php",
+            apiKey = "22d61c4a6cfe2f3496c44ad287daa878614a4fa6",
+            outputType = 2,
+            numres = 1,
+            minsim = 80,
+            dbmask = 999,
+            file = body
+        )
 
-    call.enqueue(object : Callback<ResponseBody> {
-        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+        var responseBody : String? = "init"
+        val latch = CountDownLatch(1)
+
+//        call.enqueue(object : Callback<ResponseBody> {
+//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+//                if (response.isSuccessful) {
+//                    val responseBody = response.body()?.string()
+//                    println("Response: $responseBody")
+//                } else {
+//                    println("Error: ${response.errorBody()?.string()}")
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                t.printStackTrace()
+//            }
+//        })
+
+    thread {
+        try {
+            val response = call.execute()
             if (response.isSuccessful) {
-                val responseBody = response.body()?.string()
-                println("Response: $responseBody")
+                responseBody = response.body()?.string()
             } else {
-                println("Error: ${response.errorBody()?.string()}")
+                println("response is not successful")
             }
+        } catch (e: IOException) {
+            println("response IOException")
+        } finally {
+            latch.countDown()
         }
-
-        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-            t.printStackTrace()
-        }
-    })
+    }
+    latch.await()
+    println("end uploadImage")
+    println("Response: $responseBody")
+    return responseBody
 }
 
-fun search(imageByteArray : ByteArray){
+fun search(imageByteArray : ByteArray) : String? {
     println("Search Start")
 
 //    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.testimage)
 //    val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-    uploadImage(imageByteArray)
+    return uploadImage(imageByteArray)
 }
 
-fun searchbyBitmap(bitmap: Bitmap) {
+fun search(bitmap: Bitmap) : String? {
     println("Search by Bitmap Start")
+    // bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
     // Save bitmap to PNG
     val bos = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
     val bitmapdata = bos.toByteArray()
-    search(bitmapdata)
+    return search(bitmapdata)
 }
 
-fun searchbyUrl(Url: String) {
+fun search(Url: String) : String? {
     println("Search by Url Start")
     val exampleUrl = "http://123.57.89.45/dedfaf_posts/MC/skin/Murasame.png"
 //    thread {
@@ -129,9 +152,10 @@ fun searchbyUrl(Url: String) {
 
         if (imageByte != null) {
             print(imageByte)
-            search(imageByte)
+            return search(imageByte)
         } else {
             print("imageByte is null")
+            return null
         }
     }
 }
