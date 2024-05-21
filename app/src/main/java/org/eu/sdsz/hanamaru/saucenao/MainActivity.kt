@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +26,7 @@ import org.eu.sdsz.hanamaru.saucenao.process.search
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
 import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
+import kotlin.concurrent.thread
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: PreferenceViewModel
@@ -69,16 +71,16 @@ class MainActivity : ComponentActivity() {
                     imageUrl = imageUrl,
                     onUrlChange = { imageUrl = it },
                     onSearch = {
-//                        Log.d("onSearch", "method: $method")
-//                        if (method) {
-//                            Log.d("onSearch", "URL: $imageUrl")
-//                        } else {
-//                            Log.d("onSearch", "Image size: ${imageFile.size}")
-//                        }
-//                        thread {
-//                            Log.d("search", "${search(viewModel.apiKey, imageFile)}")
-//                        }
-                        search(viewModel.apiKey, "http://( ﾟ∀。)/dedfaf_posts/MC/skin/Murasame.png")
+                        Log.d("onSearch", "method: $method")
+                        thread {
+                            if (method) {
+                                Log.d("onSearch", "URL: $imageUrl")
+                                Log.d("search", "${search(viewModel.apiKey, imageUrl)}")
+                            } else {
+                                Log.d("onSearch", "Image size: ${imageFile.size}")
+                                Log.d("search", "${search(viewModel.apiKey, imageFile)}")
+                            }
+                        }
                     }
                 )
             }

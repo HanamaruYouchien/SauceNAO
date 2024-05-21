@@ -19,8 +19,6 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 import retrofit2.http.Url
-import java.util.concurrent.CountDownLatch
-import kotlin.concurrent.thread
 
 
 val logging = HttpLoggingInterceptor().apply {
@@ -36,6 +34,8 @@ val retrofit: Retrofit = Retrofit.Builder()
     .client(client)
     .addConverterFactory(GsonConverterFactory.create())
     .build()
+
+val service = retrofit.create(ApiService::class.java)
 
 interface ApiService {
     @Multipart
@@ -62,13 +62,12 @@ interface ApiService {
     ): Call<ResponseBody>
 }
 
-fun uploadImage(apiKey: String, bitmapData : ByteArray) : String {
+fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<ResponseBody> {
     // Create RequestBody & MultipartBody.Part
     val requestFile = bitmapData.toRequestBody("image/png".toMediaTypeOrNull())
     val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
 
-    val service = retrofit.create(ApiService::class.java)
-    val call = service.uploadImage(
+    return service.uploadImage(
         url = "search.php",
         apiKey = apiKey,
         outputType = 2,
@@ -77,36 +76,10 @@ fun uploadImage(apiKey: String, bitmapData : ByteArray) : String {
         dbMask = 999,
         file = body
     )
-
-    var responseBody = ""
-    val latch = CountDownLatch(1)
-
-    thread {
-        try {
-            val response = call.execute()
-            if (response.isSuccessful) {
-                responseBody = response.body()?.string().toString()
-            } else {
-                println("response is not successful")
-                /* TODO throw response error here */
-            }
-        } catch (e: IOException) {
-            println("response IOException")
-        } finally {
-            latch.countDown()
-        }
-    }
-    latch.await()
-    println("end uploadImage")
-    println("Response: $responseBody")
-    return responseBody
 }
 
-fun uploadImagebyUrl(apiKey: String, imageUrl: String) : String {
-    // Create RequestBody & MultipartBody.Part
-
-    val service = retrofit.create(ApiService::class.java)
-    val call = service.uploadImagebyUrl(
+fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<ResponseBody> {
+    return service.uploadImagebyUrl(
         url = "search.php",
         apiKey = apiKey,
         outputType = 2,
@@ -115,34 +88,31 @@ fun uploadImagebyUrl(apiKey: String, imageUrl: String) : String {
         dbMask = 999,
         imageUrl = imageUrl
     )
+}
 
+
+fun postRequest(request: Call<ResponseBody>) : String {
     var responseBody = ""
-    val latch = CountDownLatch(1)
 
-    thread {
-        try {
-            val response = call.execute()
-            if (response.isSuccessful) {
-                responseBody = response.body()?.string().toString()
-            } else {
-                println("response is not successful")
-                /* TODO throw response error here */
-            }
-        } catch (e: IOException) {
-            println("response IOException")
-        } finally {
-            latch.countDown()
+    try {
+        val response = request.execute()
+        if (response.isSuccessful) {
+            responseBody = response.body()?.string().toString()
+        } else {
+            println("response is not successful")
+            /* TODO throw response error here */
         }
+    } catch (e: IOException) {
+        println("response IOException")
     }
-    latch.await()
     println("end uploadImage")
     println("Response: $responseBody")
     return responseBody
 }
-
 // Primary Search Func
 fun search(apiKey: String, imageByteArray: ByteArray) : JsonResult {
-    val responseJson = uploadImage(apiKey, imageByteArray)
+    val request = createRequestByFile(apiKey, imageByteArray)
+    val responseJson = postRequest(request)
     val result = processJson(responseJson)
     return result
 }
@@ -155,8 +125,9 @@ fun search(apiKey: String, bitmap: Bitmap) : JsonResult {
     return search(apiKey, bitmapData)
 }
 
-fun search(apiKey: String, Url: String) : JsonResult {
-    val responseJson = uploadImagebyUrl(apiKey, Url)
+fun search(apiKey: String, url: String) : JsonResult {
+    val request = createRequestByUrl(apiKey, url)
+    val responseJson = postRequest(request)
     val result = processJson(responseJson)
     println(result)
     return result
