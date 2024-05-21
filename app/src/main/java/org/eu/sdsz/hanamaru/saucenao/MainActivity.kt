@@ -22,14 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
+import org.eu.sdsz.hanamaru.saucenao.process.search
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
 import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
+import kotlin.concurrent.thread
 
 class MainActivity : ComponentActivity() {
-    lateinit var viewModel: PreferenceViewModel
-    lateinit var getImageFileLauncher: ActivityResultLauncher<PickVisualMediaRequest> // should be placed in activity
-    var imageFile = byteArrayOf()
+    private lateinit var viewModel: PreferenceViewModel
+    private lateinit var getImageFileLauncher: ActivityResultLauncher<PickVisualMediaRequest> // should be placed in activity
+    private var imageFile = byteArrayOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +76,9 @@ class MainActivity : ComponentActivity() {
                             Log.d("onSearch", "URL: $imageUrl")
                         } else {
                             Log.d("onSearch", "Image size: ${imageFile.size}")
+                        }
+                        thread {
+                            Log.d("search", "${search(viewModel.apiKey, imageFile)}")
                         }
                     }
                 )

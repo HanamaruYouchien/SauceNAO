@@ -10,6 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
+import org.eu.sdsz.hanamaru.saucenao.data.JsonResult
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,7 +31,7 @@ val client = OkHttpClient.Builder()
     .addInterceptor(logging)
     .build()
 
-val retrofit = Retrofit.Builder()
+val retrofit: Retrofit = Retrofit.Builder()
     .baseUrl("https://saucenao.com/")
     .client(client)
     .addConverterFactory(GsonConverterFactory.create())
@@ -43,51 +44,31 @@ interface ApiService {
         @Url url: String,
         @Query("api_key") apiKey: String,
         @Query("output_type") outputType: Int,
-        @Query("numres") numres: Int,
-        @Query("minsim") minsim: Int,
-        @Query("dbmask") dbmask: Int,
+        @Query("numres") numResult: Int,
+        @Query("minsim") minSimilarity: Int,
+        @Query("dbmask") dbMask: Int,
         @Part file: MultipartBody.Part
     ): Call<ResponseBody>
 }
 
-fun uploadImage(bitmapdata : ByteArray) : String {
-    // Save bitmap to PNG
-//    val bos = ByteArrayOutputStream()
-//    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
-//    val bitmapdata = bos.toByteArray()
+fun uploadImage(apiKey: String, bitmapData : ByteArray) : String {
+    // Create RequestBody & MultipartBody.Part
+    val requestFile = bitmapData.toRequestBody("image/png".toMediaTypeOrNull())
+    val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
 
-        // Create RequestBody & MultipartBody.Part
-        val requestFile = bitmapdata.toRequestBody("image/png".toMediaTypeOrNull())
-        val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
+    val service = retrofit.create(ApiService::class.java)
+    val call = service.uploadImage(
+        url = "search.php",
+        apiKey = apiKey,
+        outputType = 2,
+        numResult = 1,
+        minSimilarity = 80,
+        dbMask = 999,
+        file = body
+    )
 
-        val service = retrofit.create(ApiService::class.java)
-        val call = service.uploadImage(
-            url = "search.php",
-            apiKey = "22d61c4a6cfe2f3496c44ad287daa878614a4fa6",
-            outputType = 2,
-            numres = 1,
-            minsim = 80,
-            dbmask = 999,
-            file = body
-        )
-
-        var responseBody : String = "init"
-        val latch = CountDownLatch(1)
-
-//        call.enqueue(object : Callback<ResponseBody> {
-//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-//                if (response.isSuccessful) {
-//                    val responseBody = response.body()?.string()
-//                    println("Response: $responseBody")
-//                } else {
-//                    println("Error: ${response.errorBody()?.string()}")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                t.printStackTrace()
-//            }
-//        })
+    var responseBody = ""
+    val latch = CountDownLatch(1)
 
     thread {
         try {
@@ -96,6 +77,7 @@ fun uploadImage(bitmapdata : ByteArray) : String {
                 responseBody = response.body()?.string().toString()
             } else {
                 println("response is not successful")
+                /* TODO throw response error here */
             }
         } catch (e: IOException) {
             println("response IOException")
@@ -106,35 +88,25 @@ fun uploadImage(bitmapdata : ByteArray) : String {
     latch.await()
     println("end uploadImage")
     println("Response: $responseBody")
-    if (responseBody != null) {
-        return responseBody
-    } else {
-        return "responseBody is null"
-    }
+    return responseBody
 }
 
 // Primary Search Func
-fun search(imageByteArray : ByteArray) : jsonResult? {
-    println("Search Start")
-
-    val result : jsonResult?
-    val responseJson = uploadImage(imageByteArray)
-    println("responseJson:$responseJson")
-    result = processjson(responseJson)
+fun search(apiKey: String, imageByteArray: ByteArray) : JsonResult {
+    val responseJson = uploadImage(apiKey, imageByteArray)
+    val result = processJson(responseJson)
     return result
 }
 
-fun search(bitmap: Bitmap) : jsonResult? {
-    println("Search by Bitmap Start")
-    // bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+fun search(apiKey: String, bitmap: Bitmap) : JsonResult {
     // Save bitmap to PNG
     val bos = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
-    val bitmapdata = bos.toByteArray()
-    return search(bitmapdata)
+    val bitmapData = bos.toByteArray()
+    return search(apiKey, bitmapData)
 }
 
-fun search(Url: String) : jsonResult? {
+fun search(Url: String) : JsonResult? {
     println("Search by Url Start")
     val exampleUrl = "http://( ﾟ∀。)/dedfaf_posts/MC/skin/Murasame.png"
 //    thread {
@@ -159,7 +131,7 @@ fun search(Url: String) : jsonResult? {
 
         if (imageByte != null) {
             print(imageByte)
-            return search(imageByte)
+            return search("", imageByte)
         } else {
             print("imageByte is null")
             return null
