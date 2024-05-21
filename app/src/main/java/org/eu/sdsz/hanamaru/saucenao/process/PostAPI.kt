@@ -5,7 +5,6 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.ou
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,6 +13,7 @@ import org.eu.sdsz.hanamaru.saucenao.data.JsonResult
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -48,6 +48,17 @@ interface ApiService {
         @Query("minsim") minSimilarity: Int,
         @Query("dbmask") dbMask: Int,
         @Part file: MultipartBody.Part
+    ): Call<ResponseBody>
+
+    @GET
+    fun uploadImagebyUrl(
+        @Url url: String,
+        @Query("api_key") apiKey: String,
+        @Query("output_type") outputType: Int,
+        @Query("numres") numResult: Int,
+        @Query("minsim") minSimilarity: Int,
+        @Query("dbmask") dbMask: Int,
+        @Query("url") imageUrl: String
     ): Call<ResponseBody>
 }
 
@@ -91,6 +102,44 @@ fun uploadImage(apiKey: String, bitmapData : ByteArray) : String {
     return responseBody
 }
 
+fun uploadImagebyUrl(apiKey: String, imageUrl: String) : String {
+    // Create RequestBody & MultipartBody.Part
+
+    val service = retrofit.create(ApiService::class.java)
+    val call = service.uploadImagebyUrl(
+        url = "search.php",
+        apiKey = apiKey,
+        outputType = 2,
+        numResult = 1,
+        minSimilarity = 80,
+        dbMask = 999,
+        imageUrl = imageUrl
+    )
+
+    var responseBody = ""
+    val latch = CountDownLatch(1)
+
+    thread {
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                responseBody = response.body()?.string().toString()
+            } else {
+                println("response is not successful")
+                /* TODO throw response error here */
+            }
+        } catch (e: IOException) {
+            println("response IOException")
+        } finally {
+            latch.countDown()
+        }
+    }
+    latch.await()
+    println("end uploadImage")
+    println("Response: $responseBody")
+    return responseBody
+}
+
 // Primary Search Func
 fun search(apiKey: String, imageByteArray: ByteArray) : JsonResult {
     val responseJson = uploadImage(apiKey, imageByteArray)
@@ -106,35 +155,9 @@ fun search(apiKey: String, bitmap: Bitmap) : JsonResult {
     return search(apiKey, bitmapData)
 }
 
-fun search(Url: String) : JsonResult? {
-    println("Search by Url Start")
-    val exampleUrl = "http://( ﾟ∀。)/dedfaf_posts/MC/skin/Murasame.png"
-//    thread {
-//        try {
-////            val url = URL(Url)
-//            val url = URL(exampleUrl)
-//            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-//            connection.doInput = true
-//            connection.connect()
-//            val input: InputStream = connection.inputStream
-//            val bitmap = input.toString()
-//        }
-//    }
-    val client = OkHttpClient()
-//    val request = Request.Builder().url(Url).build()
-    // USE EXAMPLE AT CURRENT
-    val request = Request.Builder().url(exampleUrl).build()
-
-    client.newCall(request).execute().use { response ->
-        if (!response.isSuccessful) throw IOException("Unexpected code $response")
-        val imageByte = response.body?.bytes()
-
-        if (imageByte != null) {
-            print(imageByte)
-            return search("", imageByte)
-        } else {
-            print("imageByte is null")
-            return null
-        }
-    }
+fun search(apiKey: String, Url: String) : JsonResult {
+    val responseJson = uploadImagebyUrl(apiKey, Url)
+    val result = processJson(responseJson)
+    println(result)
+    return result
 }
