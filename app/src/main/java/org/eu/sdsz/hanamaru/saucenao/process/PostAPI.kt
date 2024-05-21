@@ -5,9 +5,11 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.ou
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import okio.IOException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,11 +50,11 @@ interface ApiService {
     ): Call<ResponseBody>
 }
 
-fun uploadImage(bitmap: Bitmap) {
+fun uploadImage(bitmapdata : ByteArray) {
     // Save bitmap to PNG
-    val bos = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
-    val bitmapdata = bos.toByteArray()
+//    val bos = ByteArrayOutputStream()
+//    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
+//    val bitmapdata = bos.toByteArray()
 
     // Create RequestBody & MultipartBody.Part
     val requestFile = bitmapdata.toRequestBody("image/png".toMediaTypeOrNull())
@@ -85,10 +87,51 @@ fun uploadImage(bitmap: Bitmap) {
     })
 }
 
-fun search(){
+fun search(imageByteArray : ByteArray){
     println("Search Start")
 
 //    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.testimage)
-    val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-    uploadImage(bitmap)
+//    val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+    uploadImage(imageByteArray)
+}
+
+fun searchbyBitmap(bitmap: Bitmap) {
+    println("Search by Bitmap Start")
+    // Save bitmap to PNG
+    val bos = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
+    val bitmapdata = bos.toByteArray()
+    search(bitmapdata)
+}
+
+fun searchbyUrl(Url: String) {
+    println("Search by Url Start")
+    val exampleUrl = "http://123.57.89.45/dedfaf_posts/MC/skin/Murasame.png"
+//    thread {
+//        try {
+////            val url = URL(Url)
+//            val url = URL(exampleUrl)
+//            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+//            connection.doInput = true
+//            connection.connect()
+//            val input: InputStream = connection.inputStream
+//            val bitmap = input.toString()
+//        }
+//    }
+    val client = OkHttpClient()
+//    val request = Request.Builder().url(Url).build()
+    // USE EXAMPLE AT CURRENT
+    val request = Request.Builder().url(exampleUrl).build()
+
+    client.newCall(request).execute().use { response ->
+        if (!response.isSuccessful) throw IOException("Unexpected code $response")
+        val imageByte = response.body?.bytes()
+
+        if (imageByte != null) {
+            print(imageByte)
+            search(imageByte)
+        } else {
+            print("imageByte is null")
+        }
+    }
 }
