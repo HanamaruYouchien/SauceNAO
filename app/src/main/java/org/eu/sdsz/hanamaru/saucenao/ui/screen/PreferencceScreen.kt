@@ -10,8 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.eu.sdsz.hanamaru.saucenao.ui.component.ApikeyEntry
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import java.util.prefs.Preferences
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

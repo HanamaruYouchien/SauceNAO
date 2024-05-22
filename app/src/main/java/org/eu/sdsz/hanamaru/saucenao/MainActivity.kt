@@ -22,12 +22,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
-import org.eu.sdsz.hanamaru.saucenao.data.JsonResult
+import org.eu.sdsz.hanamaru.saucenao.data.Result
 import org.eu.sdsz.hanamaru.saucenao.process.search
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
 import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
-import kotlin.concurrent.thread
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: PreferenceViewModel
@@ -38,7 +37,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        viewModel = ViewModelProvider(this).get(PreferenceViewModel::class.java)
+        viewModel = ViewModelProvider(this)[PreferenceViewModel::class.java]
         getImageFileLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if (it != null) {
                 MainScope().launch(Dispatchers.IO) {
@@ -58,6 +57,9 @@ class MainActivity : ComponentActivity() {
                 var appState by rememberSaveable {
                     mutableStateOf(AppState.MAIN)
                 }
+                var resultData by rememberSaveable {
+                    mutableStateOf<List<Result>?>(null)
+                }
 
                 AppScreen(
                     appState = appState,
@@ -71,20 +73,13 @@ class MainActivity : ComponentActivity() {
                     )) },
                     imageUrl = imageUrl,
                     onUrlChange = { imageUrl = it },
+                    resultData = resultData?: listOf(),
                     onSearch = {
                         Log.d("onSearch", "method: $method")
-                        thread {
-                            val res = if (method) {
-                                    Log.d("onSearch", "URL: $imageUrl")
-                                    search(viewModel.apiKey, imageUrl)
-                                } else {
-                                    Log.d("onSearch", "Image size: ${imageFile.size}")
-                                    search(viewModel.apiKey, imageFile)
-                                }
-                            Log.d("search", "$res")
-                            res?.results?.get(0)?.let { Log.d("search", it.getTitle()) }
-                            res?.results?.get(0)?.let { Log.d("search", it.getAuthor()) }
-                            res?.results?.get(0)?.let { Log.d("search", "${it.getUrls()}") }
+                        MainScope().launch(Dispatchers.IO) {
+                            val res = if (method) { search(viewModel.apiKey, imageUrl) } else { search(viewModel.apiKey, imageFile) }
+                            resultData = res?.results
+                            appState = AppState.RESULT
                         }
                     }
                 )
@@ -107,6 +102,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
-        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, {})
+        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {})
     }
 }

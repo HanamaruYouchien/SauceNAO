@@ -9,14 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import org.eu.sdsz.hanamaru.saucenao.data.Result
 import org.eu.sdsz.hanamaru.saucenao.ui.component.ResultList
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ResultScreen() {
+fun ResultScreen(resultData: List<Result>) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-            ResultList()
+            ResultList(resultData)
         }
     }
 }
@@ -24,5 +25,5 @@ fun ResultScreen() {
 @Preview
 @Composable
 fun PreviewResultScreen() {
-    ResultScreen()
+    ResultScreen(listOf())
 }

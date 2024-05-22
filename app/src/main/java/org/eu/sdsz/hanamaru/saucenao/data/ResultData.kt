@@ -28,7 +28,7 @@ data class JsonHeader(
 
 data class ResultHeader(
     @Json(name = "similarity")
-    val similarity: String,
+    val similarity: Float,
     @Json(name = "index_id")
     val indexId: Int,
     @Json(name = "thumbnail")

@@ -20,10 +20,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
+import org.eu.sdsz.hanamaru.saucenao.data.Result
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit) {
+fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, resultData: List<Result>, onSearch: ()->Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -50,7 +51,7 @@ fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey:
             when(appState) {
                 AppState.MAIN -> { MainScreen(method = method, onMethodChange = onMethodChange, onSelectImage = onSelectImage, imageUrl = imageUrl, onUrlChange = onUrlChange, onSearch = onSearch) }
                 AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
-                AppState.RESULT -> { ResultScreen() }
+                AppState.RESULT -> { ResultScreen(resultData) }
             }
         }
     }
@@ -59,5 +60,5 @@ fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey:
 @Preview
 @Composable
 fun PreviewAppScreen() {
-    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, {})
+    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {})
 }

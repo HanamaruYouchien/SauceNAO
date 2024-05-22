@@ -17,20 +17,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ResultItem() {
+fun ResultItem(thumbnail: String, title: String, author: String, link: String, similarity: Float) {
     Card (modifier = Modifier
         .fillMaxWidth()
         .padding(3.dp)) {
         Row (modifier = Modifier.padding(6.dp)) {
             Image(imageVector = Icons.Default.Image, contentDescription = "thumbnail")
             // some column might not exist, should be handled by parser
-            Column {
-                Text(text = "Title")
-                Text(text = "author")
-                Text(text = "link")
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = title)
+                Text(text = author)
+                Text(text = link)
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = "similarity")
+            Text(text = "${similarity}%")
         }
     }
 }
@@ -38,5 +37,5 @@ fun ResultItem() {
 @Preview
 @Composable
 fun PreviewResultItem() {
-    ResultItem()
+    ResultItem("", "", "", "", 0f)
 }

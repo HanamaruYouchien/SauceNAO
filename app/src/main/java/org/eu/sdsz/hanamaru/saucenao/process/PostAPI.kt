@@ -76,7 +76,7 @@ fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<JsonResult
         url = "search.php",
         apiKey = apiKey,
         outputType = 2,
-        numResult = 1,
+        numResult = 8,
         minSimilarity = 80,
         dbMask = 999,
         file = body
@@ -88,7 +88,7 @@ fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<JsonResult> {
         url = "search.php",
         apiKey = apiKey,
         outputType = 2,
-        numResult = 1,
+        numResult = 8,
         minSimilarity = 80,
         dbMask = 999,
         imageUrl = imageUrl
