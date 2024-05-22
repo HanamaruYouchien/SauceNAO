@@ -102,19 +102,10 @@ fun postRequest(request: Call<JsonResult>) : JsonResult? {
     try {
         responseBody = request.execute().body()
         return responseBody
-//        if (response.isSuccessful) {
-//            responseBody = response.body()!!
-//        } else {
-//            println("response is not successful")
-//            /* TODO throw response error here */
-//        }
     } catch (e: IOException) {
         println("response IOException")
     }
     return null
-//    println("end uploadImage")
-//    println("Response: $responseBody")
-//    return responseBody
 }
 // Primary Search Func
 fun search(apiKey: String, imageByteArray: ByteArray) : JsonResult? {
