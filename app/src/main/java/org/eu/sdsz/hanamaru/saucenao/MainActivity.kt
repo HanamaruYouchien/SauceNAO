@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
+import org.eu.sdsz.hanamaru.saucenao.data.JsonResult
 import org.eu.sdsz.hanamaru.saucenao.process.search
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
@@ -73,13 +74,17 @@ class MainActivity : ComponentActivity() {
                     onSearch = {
                         Log.d("onSearch", "method: $method")
                         thread {
-                            if (method) {
-                                Log.d("onSearch", "URL: $imageUrl")
-                                Log.d("search", "${search(viewModel.apiKey, imageUrl)}")
-                            } else {
-                                Log.d("onSearch", "Image size: ${imageFile.size}")
-                                Log.d("search", "${search(viewModel.apiKey, imageFile)}")
-                            }
+                            val res = if (method) {
+                                    Log.d("onSearch", "URL: $imageUrl")
+                                    search(viewModel.apiKey, imageUrl)
+                                } else {
+                                    Log.d("onSearch", "Image size: ${imageFile.size}")
+                                    search(viewModel.apiKey, imageFile)
+                                }
+                            Log.d("search", "$res")
+                            res?.results?.get(0)?.let { Log.d("search", it.getTitle()) }
+                            res?.results?.get(0)?.let { Log.d("search", it.getAuthor()) }
+                            res?.results?.get(0)?.let { Log.d("search", "${it.getUrls()}") }
                         }
                     }
                 )

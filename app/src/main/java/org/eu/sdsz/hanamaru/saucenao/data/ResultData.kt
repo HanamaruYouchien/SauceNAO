@@ -17,6 +17,9 @@ val keysAuthor = arrayOf(
     "twitter_user_handle",
     "company"
 )
+const val keyCreator = "creator"
+const val keyUrls = "ext_urls"
+const val keyGetchu = "getchu_id"
 
 data class JsonHeader(
     @Json(name = "results_returned")
@@ -27,7 +30,7 @@ data class ResultHeader(
     @Json(name = "similarity")
     val similarity: String,
     @Json(name = "index_id")
-    val index_id: Int,
+    val indexId: Int,
     @Json(name = "thumbnail")
     val thumbnail: String
 )
@@ -39,25 +42,42 @@ data class Result(
     @Json(name = "data")
     val data: Map<String, Any>
 ) {
-    fun getTitle(): Any? {
+    fun getTitle(): String {
         for (key in keysTitle) {
             if (data.containsKey(key)) {
-                return data[key]
+                return data[key].toString()
             }
         }
-        return null
+        return ""
     }
-    fun getAuthor(): Any? {
+    fun getAuthor(): String {
         for (key in keysAuthor) {
             if (data.containsKey(key)) {
-                return data[key]
+                return data[key].toString()
             }
         }
-        return null
+        if (data.containsKey(keyCreator)) {
+            if (data[keyCreator] is String) {
+                return data[keyCreator].toString()
+            } else if (data[keyCreator] is List<*>) {
+                return (data[keyCreator] as List<*>)[0].toString()
+            }
+        }
+        return ""
+    }
+
+    fun getUrls(): List<String> {
+        if (data.containsKey(keyUrls)) {
+            @Suppress("UNCHECKED_CAST")
+            return data[keyUrls] as List<String> // always List<String> if ext_urls set
+        }
+        if (data.containsKey(keyGetchu)) {
+            return listOf("http://www.getchu.com/soft.phtml?id=${data[keyGetchu].toString()}")
+        }
+        return listOf()
     }
 }
 
-//@JsonClass(generateAdapter = true)
 data class JsonResult(
     @Json(name = "header")
     val resultsReturned: JsonHeader?,

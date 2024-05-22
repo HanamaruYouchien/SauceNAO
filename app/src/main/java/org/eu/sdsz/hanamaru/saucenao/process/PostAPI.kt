@@ -21,7 +21,7 @@ import retrofit2.http.Part
 import retrofit2.http.Query
 import retrofit2.http.Url
 
-val moshi = Moshi.Builder()
+val moshi: Moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
@@ -40,12 +40,12 @@ val retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
-val service = retrofit.create(ApiService::class.java)
+val service: ApiService = retrofit.create(ApiService::class.java)
 
 interface ApiService {
     @Multipart
     @POST
-    fun uploadImage(
+    fun uploadImageByFile(
         @Url url: String,
         @Query("api_key") apiKey: String,
         @Query("output_type") outputType: Int,
@@ -56,7 +56,7 @@ interface ApiService {
     ): Call<JsonResult>
 
     @GET
-    fun uploadImagebyUrl(
+    fun uploadImageByUrl(
         @Url url: String,
         @Query("api_key") apiKey: String,
         @Query("output_type") outputType: Int,
@@ -72,7 +72,7 @@ fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<JsonResult
     val requestFile = bitmapData.toRequestBody("image/png".toMediaTypeOrNull())
     val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
 
-    return service.uploadImage(
+    return service.uploadImageByFile(
         url = "search.php",
         apiKey = apiKey,
         outputType = 2,
@@ -84,7 +84,7 @@ fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<JsonResult
 }
 
 fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<JsonResult> {
-    return service.uploadImagebyUrl(
+    return service.uploadImageByUrl(
         url = "search.php",
         apiKey = apiKey,
         outputType = 2,
@@ -95,24 +95,19 @@ fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<JsonResult> {
     )
 }
 
-
 fun postRequest(request: Call<JsonResult>) : JsonResult? {
-    var responseBody : JsonResult?
-
     try {
-        responseBody = request.execute().body()
+        val responseBody = request.execute().body()
         return responseBody
     } catch (e: IOException) {
-        println("response IOException")
+        return null
     }
-    return null
 }
+
 // Primary Search Func
 fun search(apiKey: String, imageByteArray: ByteArray) : JsonResult? {
     val request = createRequestByFile(apiKey, imageByteArray)
     val responseJson = postRequest(request)
-//    val result = processJson(responseJson)
-//    return result
     return responseJson
 }
 
@@ -127,8 +122,5 @@ fun search(apiKey: String, bitmap: Bitmap) : JsonResult? {
 fun search(apiKey: String, url: String) : JsonResult? {
     val request = createRequestByUrl(apiKey, url)
     val responseJson = postRequest(request)
-//    val result = processJson(responseJson)
-//    println(result)
-//    return result
     return responseJson
 }
