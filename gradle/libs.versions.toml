@@ -18,6 +18,7 @@ converterMoshi = "2.11.0"
 moshiKotlin = "1.15.1"
 moshi = "1.15.1"
 composePreviewRenderer = "0.0.1-alpha01"
+coilCompose = "2.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", 
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 compose-preview-renderer = { group = "com.android.tools.compose", name = "compose-preview-renderer", version.ref = "composePreviewRenderer" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
