@@ -14,6 +14,10 @@ okhttp = "5.0.0-alpha.14"
 converterScalars = "2.11.0"
 loggingInterceptor = "5.0.0-alpha.14"
 firebaseCrashlyticsBuildtools = "3.0.0"
+converterMoshi = "2.11.0"
+moshiKotlin = "1.15.1"
+moshi = "1.15.1"
+composePreviewRenderer = "0.0.1-alpha01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +42,10 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "converterScalars" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "converterMoshi" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+compose-preview-renderer = { group = "com.android.tools.compose", name = "compose-preview-renderer", version.ref = "composePreviewRenderer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
