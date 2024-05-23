@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
                         Log.d("onSearch", "method: $method")
                         MainScope().launch(Dispatchers.IO) {
                             val res = if (method) { search(viewModel.apiKey, imageUrl) } else { search(viewModel.apiKey, imageFile) }
+                            Log.d("search", "$res")
                             resultData = res?.results
                             appState = AppState.RESULT
                         }

@@ -21,9 +21,16 @@ const val keyCreator = "creator"
 const val keyUrls = "ext_urls"
 const val keyGetchu = "getchu_id"
 
+const val STATUS_OK = 0
+const val STATUS_URL_NOT_USABLE = -3
+const val STATUS_EMPTY_IMAGE = -4
 data class JsonHeader(
+    @Json(name = "status")
+    val status: Int,
+    @Json(name = "message")
+    val message: String?,
     @Json(name = "results_returned")
-    val resultsReturned: Int
+    val resultsReturned: Int?,
 )
 
 data class ResultHeader(
@@ -80,7 +87,7 @@ data class Result(
 
 data class JsonResult(
     @Json(name = "header")
-    val resultsReturned: JsonHeader?,
+    val resultsReturned: JsonHeader,
     @Json(name = "results")
     val results: List<Result>?
 )
