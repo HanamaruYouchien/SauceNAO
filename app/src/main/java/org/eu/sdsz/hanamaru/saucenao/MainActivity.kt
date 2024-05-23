@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
+import android.security.identity.ResultData
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +25,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
 import org.eu.sdsz.hanamaru.saucenao.data.Result
+import org.eu.sdsz.hanamaru.saucenao.data.STATUS_OK
 import org.eu.sdsz.hanamaru.saucenao.process.search
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
@@ -79,8 +82,20 @@ class MainActivity : ComponentActivity() {
                         MainScope().launch(Dispatchers.IO) {
                             val res = if (method) { search(viewModel.apiKey, imageUrl) } else { search(viewModel.apiKey, imageFile) }
                             Log.d("search", "$res")
-                            resultData = res?.results
-                            appState = AppState.RESULT
+                            MainScope().launch(Dispatchers.Main) {
+                                when {
+                                    null == res -> {
+                                        Toast.makeText(this@MainActivity, "Request Failed. No Network Probably", Toast.LENGTH_LONG).show()
+                                    }
+                                    STATUS_OK == res.header.status -> {
+                                        resultData = res.results
+                                        appState = AppState.RESULT
+                                    }
+                                    else -> {
+                                        Toast.makeText(this@MainActivity, res.header.message?: "Unknown Error", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
                         }
                     }
                 )

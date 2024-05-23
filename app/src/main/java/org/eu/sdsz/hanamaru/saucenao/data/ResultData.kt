@@ -87,7 +87,7 @@ data class Result(
 
 data class JsonResult(
     @Json(name = "header")
-    val resultsReturned: JsonHeader,
+    val header: JsonHeader,
     @Json(name = "results")
     val results: List<Result>?
 )
