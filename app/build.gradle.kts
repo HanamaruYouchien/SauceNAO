@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.ui.test.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
