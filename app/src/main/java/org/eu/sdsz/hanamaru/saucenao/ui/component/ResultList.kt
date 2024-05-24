@@ -28,9 +28,7 @@ fun ResultList(data: List<Result>, toUrl : (String) -> Unit) {
                 author = it.getAuthor(),
                 link = link,
                 similarity = it.header.similarity,
-                onClick = {
-                    toUrl(link)
-                }
+                toUrl = toUrl
             )
         }
     }

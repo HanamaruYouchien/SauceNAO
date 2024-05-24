@@ -124,6 +124,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
-        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, { "" })
+        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, {})
     }
 }

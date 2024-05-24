@@ -1,6 +1,7 @@
 package org.eu.sdsz.hanamaru.saucenao.data
 
 import com.squareup.moshi.Json
+import java.io.Serializable
 
 val keysTitle = arrayOf(
     "title",
@@ -40,7 +41,7 @@ data class ResultHeader(
     val indexId: Int,
     @Json(name = "thumbnail")
     val thumbnail: String
-)
+) : Serializable
 
 
 data class Result(
@@ -48,7 +49,7 @@ data class Result(
     val header: ResultHeader,
     @Json(name = "data")
     val data: Map<String, Any>
-) {
+) : Serializable {
     fun getTitle(): String {
         for (key in keysTitle) {
             if (data.containsKey(key)) {
