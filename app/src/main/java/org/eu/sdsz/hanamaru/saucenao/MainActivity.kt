@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
-import android.security.identity.ResultData
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -24,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
-import org.eu.sdsz.hanamaru.saucenao.data.Result
+import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 import org.eu.sdsz.hanamaru.saucenao.data.STATUS_OK
 import org.eu.sdsz.hanamaru.saucenao.process.search
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
@@ -61,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(AppState.MAIN)
                 }
                 var resultData by rememberSaveable {
-                    mutableStateOf<List<Result>?>(null)
+                    mutableStateOf<List<SaucenaoResult.Result>?>(null)
                 }
 
                 AppScreen(

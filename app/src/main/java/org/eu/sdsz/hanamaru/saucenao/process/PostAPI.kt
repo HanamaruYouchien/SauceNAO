@@ -10,7 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
-import org.eu.sdsz.hanamaru.saucenao.data.JsonResult
+import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -53,7 +53,7 @@ interface ApiService {
         @Query("minsim") minSimilarity: Int,
         @Query("dbmask") dbMask: Int,
         @Part file: MultipartBody.Part
-    ): Call<JsonResult>
+    ): Call<SaucenaoResult>
 
     @GET
     fun uploadImageByUrl(
@@ -64,10 +64,10 @@ interface ApiService {
         @Query("minsim") minSimilarity: Int,
         @Query("dbmask") dbMask: Int,
         @Query("url") imageUrl: String
-    ): Call<JsonResult>
+    ): Call<SaucenaoResult>
 }
 
-fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<JsonResult> {
+fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<SaucenaoResult> {
     // Create RequestBody & MultipartBody.Part
     val requestFile = bitmapData.toRequestBody("image/png".toMediaTypeOrNull())
     val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
@@ -83,7 +83,7 @@ fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<JsonResult
     )
 }
 
-fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<JsonResult> {
+fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<SaucenaoResult> {
     return service.uploadImageByUrl(
         url = "search.php",
         apiKey = apiKey,
@@ -95,7 +95,7 @@ fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<JsonResult> {
     )
 }
 
-fun postRequest(request: Call<JsonResult>) : JsonResult? {
+fun postRequest(request: Call<SaucenaoResult>) : SaucenaoResult? {
     try {
         val responseBody = request.execute().body()
         return responseBody
@@ -105,13 +105,13 @@ fun postRequest(request: Call<JsonResult>) : JsonResult? {
 }
 
 // Primary Search Func
-fun search(apiKey: String, imageByteArray: ByteArray) : JsonResult? {
+fun search(apiKey: String, imageByteArray: ByteArray) : SaucenaoResult? {
     val request = createRequestByFile(apiKey, imageByteArray)
     val responseJson = postRequest(request)
     return responseJson
 }
 
-fun search(apiKey: String, bitmap: Bitmap) : JsonResult? {
+fun search(apiKey: String, bitmap: Bitmap) : SaucenaoResult? {
     // Save bitmap to PNG
     val bos = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
@@ -119,7 +119,7 @@ fun search(apiKey: String, bitmap: Bitmap) : JsonResult? {
     return search(apiKey, bitmapData)
 }
 
-fun search(apiKey: String, url: String) : JsonResult? {
+fun search(apiKey: String, url: String) : SaucenaoResult? {
     val request = createRequestByUrl(apiKey, url)
     val responseJson = postRequest(request)
     return responseJson

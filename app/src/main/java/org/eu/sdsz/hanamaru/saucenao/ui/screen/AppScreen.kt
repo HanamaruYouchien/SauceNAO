@@ -13,18 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
-import org.eu.sdsz.hanamaru.saucenao.data.Result
+import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, resultData: List<Result>, onSearch: ()->Unit) {
+fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, resultData: List<SaucenaoResult.Result>, onSearch: ()->Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {

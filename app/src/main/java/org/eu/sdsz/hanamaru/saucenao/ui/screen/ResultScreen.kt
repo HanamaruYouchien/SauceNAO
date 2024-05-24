@@ -9,12 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import org.eu.sdsz.hanamaru.saucenao.data.Result
+import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 import org.eu.sdsz.hanamaru.saucenao.ui.component.ResultList
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ResultScreen(resultData: List<Result>) {
+fun ResultScreen(resultData: List<SaucenaoResult.Result>) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             ResultList(resultData)
