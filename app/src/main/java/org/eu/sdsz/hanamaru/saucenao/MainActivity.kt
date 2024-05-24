@@ -24,7 +24,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
 import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
-import org.eu.sdsz.hanamaru.saucenao.data.STATUS_OK
 import org.eu.sdsz.hanamaru.saucenao.process.SauceNAO
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
@@ -86,7 +85,7 @@ class MainActivity : ComponentActivity() {
                                     null == res -> {
                                         Toast.makeText(this@MainActivity, "Request Failed. No Network Probably", Toast.LENGTH_LONG).show()
                                     }
-                                    STATUS_OK == res.header.status -> {
+                                    SauceNAO.STATUS_OK == res.header.status -> {
                                         resultData = res.results
                                         appState = AppState.RESULT
                                     }

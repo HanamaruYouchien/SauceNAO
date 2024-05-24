@@ -23,6 +23,20 @@ import retrofit2.http.Url
 
 class SauceNAO {
     companion object {
+        const val STATUS_OK = 0
+        const val STATUS_ANONYMOUS_ACCOUNT = -1
+        const val STATUS_URL_NOT_USABLE = -3
+        const val STATUS_EMPTY_IMAGE = -4
+
+        const val DEDUPE_NO = 0
+        const val DEDUPE_BOORU = 1
+        const val DEDUPE_ALL = 2
+
+        const val HIDE_NO = 0
+        const val HIDE_EXPECTED = 1
+        const val HIDE_EXPECTED_AND_SUSPECTED = 2
+        const val HIDE_ALL_BUT_SAFE = 3
+
         private val moshi: Moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
@@ -46,9 +60,10 @@ class SauceNAO {
                 @Url url: String,
                 @Query("api_key") apiKey: String,
                 @Query("output_type") outputType: Int,
-                @Query("numres") numResult: Int,
-                @Query("minsim") minSimilarity: Int,
-                @Query("dbmask") dbMask: Int,
+                @Query("numres") numResult: Int?,
+                @Query("dbmask") dbMask: Long?,
+                @Query("dedupe") deDupe: Int?,
+                @Query("hide") hide: Int?,
                 @Part file: MultipartBody.Part
             ): Call<SaucenaoResult>
 
@@ -57,14 +72,15 @@ class SauceNAO {
                 @Url url: String,
                 @Query("api_key") apiKey: String,
                 @Query("output_type") outputType: Int,
-                @Query("numres") numResult: Int,
-                @Query("minsim") minSimilarity: Int,
-                @Query("dbmask") dbMask: Int,
+                @Query("numres") numResult: Int?,
+                @Query("dbmask") dbMask: Long?,
+                @Query("dedupe") deDupe: Int?,
+                @Query("hide") hide: Int?,
                 @Query("url") imageUrl: String
             ): Call<SaucenaoResult>
         }
 
-        private fun createRequestByFile(apiKey: String, bitmapData: ByteArray) : Call<SaucenaoResult> {
+        private fun createRequestByFile(apiKey: String, bitmapData: ByteArray, dbMask: Long?, numResult: Int?, deDupe: Int?, hide: Int?) : Call<SaucenaoResult> {
             // Create RequestBody & MultipartBody.Part
             val requestFile = bitmapData.toRequestBody("image/png".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", "image.png", requestFile)
@@ -73,21 +89,23 @@ class SauceNAO {
                 url = "search.php",
                 apiKey = apiKey,
                 outputType = 2,
-                numResult = 8,
-                minSimilarity = 80,
-                dbMask = 999,
+                numResult = numResult,
+                dbMask = dbMask,
+                deDupe = deDupe,
+                hide = hide,
                 file = body
             )
         }
 
-        private fun createRequestByUrl(apiKey: String, imageUrl: String) : Call<SaucenaoResult> {
+        private fun createRequestByUrl(apiKey: String, imageUrl: String, dbMask: Long?, numResult: Int?, deDupe: Int?, hide: Int?) : Call<SaucenaoResult> {
             return service.uploadImageByUrl(
                 url = "search.php",
                 apiKey = apiKey,
                 outputType = 2,
-                numResult = 8,
-                minSimilarity = 80,
-                dbMask = 999,
+                numResult = numResult,
+                dbMask = dbMask,
+                deDupe = deDupe,
+                hide = hide,
                 imageUrl = imageUrl
             )
         }
@@ -102,22 +120,22 @@ class SauceNAO {
         }
 
         // Primary Search Func
-        fun search(apiKey: String, imageByteArray: ByteArray) : SaucenaoResult? {
-            val request = createRequestByFile(apiKey, imageByteArray)
+        fun search(apiKey: String, imageByteArray: ByteArray, dbMask: Long? = null, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
+            val request = createRequestByFile(apiKey, imageByteArray, dbMask, numResult, deDupe, hide)
             val responseJson = postRequest(request)
             return responseJson
         }
 
-        fun search(apiKey: String, bitmap: Bitmap) : SaucenaoResult? {
+        fun search(apiKey: String, bitmap: Bitmap, dbMask: Long?, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
             // Save bitmap to PNG
             val bos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
             val bitmapData = bos.toByteArray()
-            return search(apiKey, bitmapData)
+            return search(apiKey, bitmapData, dbMask, numResult, deDupe, hide)
         }
 
-        fun search(apiKey: String, url: String) : SaucenaoResult? {
-            val request = createRequestByUrl(apiKey, url)
+        fun search(apiKey: String, url: String, dbMask: Long? = null, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
+            val request = createRequestByUrl(apiKey, url, dbMask, numResult, deDupe, hide)
             val responseJson = postRequest(request)
             return responseJson
         }

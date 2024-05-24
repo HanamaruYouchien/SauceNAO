@@ -21,10 +21,6 @@ const val keyCreator = "creator"
 const val keyUrls = "ext_urls"
 const val keyGetchu = "getchu_id"
 
-const val STATUS_OK = 0
-const val STATUS_URL_NOT_USABLE = -3
-const val STATUS_EMPTY_IMAGE = -4
-
 data class SaucenaoResult(
     @Json(name = "header")  val header: Header,
     @Json(name = "results") val results: List<Result>?
