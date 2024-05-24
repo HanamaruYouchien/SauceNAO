@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
 import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 import org.eu.sdsz.hanamaru.saucenao.data.STATUS_OK
-import org.eu.sdsz.hanamaru.saucenao.process.search
+import org.eu.sdsz.hanamaru.saucenao.process.SauceNAO
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
 import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                     onSearch = {
                         Log.d("onSearch", "method: $method")
                         MainScope().launch(Dispatchers.IO) {
-                            val res = if (method) { search(viewModel.apiKey, imageUrl) } else { search(viewModel.apiKey, imageFile) }
+                            val res = if (method) { SauceNAO.search(viewModel.apiKey, imageUrl) } else { SauceNAO.search(viewModel.apiKey, imageFile) }
                             Log.d("search", "$res")
                             MainScope().launch(Dispatchers.Main) {
                                 when {
