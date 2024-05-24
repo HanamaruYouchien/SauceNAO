@@ -1,7 +1,5 @@
 package org.eu.sdsz.hanamaru.saucenao.ui.component
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.eu.sdsz.hanamaru.saucenao.data.Result
 
 @Composable
-fun ResultList(data: List<Result>) {
+fun ResultList(data: List<Result>, toUrl : (String) -> Unit) {
     val context = LocalContext.current
     LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         items(data) {
@@ -31,8 +29,7 @@ fun ResultList(data: List<Result>) {
                 link = link,
                 similarity = it.header.similarity,
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                    context.startActivity(intent)
+                    toUrl(link)
                 }
             )
         }
@@ -42,5 +39,5 @@ fun ResultList(data: List<Result>) {
 @Preview
 @Composable
 fun PreviewResultList() {
-    ResultList(listOf())
+    ResultList(listOf(), {})
 }

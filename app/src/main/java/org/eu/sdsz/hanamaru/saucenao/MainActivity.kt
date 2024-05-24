@@ -1,10 +1,10 @@
 package org.eu.sdsz.hanamaru.saucenao
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
-import android.security.identity.ResultData
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -97,7 +97,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                    }
+                    },
+                    toUrl = { openUrl(it) }
                 )
             }
         }
@@ -112,12 +113,17 @@ class MainActivity : ComponentActivity() {
         val source = ImageDecoder.createSource(contentResolver, uri)
         return ImageDecoder.decodeBitmap(source)
     }
+
+    private fun openUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
-        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {})
+        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, { "" })
     }
 }
