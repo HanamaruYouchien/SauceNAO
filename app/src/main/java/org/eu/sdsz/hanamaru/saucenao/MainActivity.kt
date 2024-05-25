@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var getImageFileLauncher: ActivityResultLauncher<PickVisualMediaRequest> // should be placed in activity
     private var imageFile = byteArrayOf()
     private var isSearching = mutableStateOf(false)
+    private var imageUrl = mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,15 +46,13 @@ class MainActivity : ComponentActivity() {
             if (it != null) {
                 MainScope().launch(Dispatchers.IO) {
                     imageFile = getFileByUri(it)
+                    imageUrl.value = it.toString()
                 }
             }
         }
 
         setContent {
             SauceNAOTheme {
-                var imageUrl by rememberSaveable {
-                    mutableStateOf("")
-                }
                 var method by rememberSaveable {
                     mutableStateOf(false)
                 }
@@ -74,15 +73,15 @@ class MainActivity : ComponentActivity() {
                     onSelectImage = { getImageFileLauncher.launch(PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.ImageOnly
                     )) },
-                    imageUrl = imageUrl,
-                    onUrlChange = { imageUrl = it },
+                    imageUrl = imageUrl.value,
+                    onUrlChange = { imageUrl.value = it },
                     resultData = resultData?: listOf(),
                     toUrl = { openUrl(it) },
                     onSearch = {
                         Log.d("onSearch", "method: $method")
                         isSearching.value = true
                         MainScope().launch(Dispatchers.IO) {
-                            val res = if (method) { SauceNAO.search(viewModel.apiKey, imageUrl) } else { SauceNAO.search(viewModel.apiKey, imageFile) }
+                            val res = if (method) { SauceNAO.search(viewModel.apiKey, imageUrl.value) } else { SauceNAO.search(viewModel.apiKey, imageFile) }
                             Log.d("search", "$res")
                             MainScope().launch(Dispatchers.Main) {
                                 when {
