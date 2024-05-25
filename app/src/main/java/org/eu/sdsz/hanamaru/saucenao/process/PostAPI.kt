@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
+import org.eu.sdsz.hanamaru.saucenao.data.DBMask
 import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -120,13 +121,13 @@ class SauceNAO {
         }
 
         // Primary Search Func
-        fun search(apiKey: String, imageByteArray: ByteArray, dbMask: Long? = null, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
-            val request = createRequestByFile(apiKey, imageByteArray, dbMask, numResult, deDupe, hide)
+        fun search(apiKey: String, imageByteArray: ByteArray, dbMask: DBMask? = null, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
+            val request = createRequestByFile(apiKey, imageByteArray, dbMask?.value, numResult, deDupe, hide)
             val responseJson = postRequest(request)
             return responseJson
         }
 
-        fun search(apiKey: String, bitmap: Bitmap, dbMask: Long?, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
+        fun search(apiKey: String, bitmap: Bitmap, dbMask: DBMask?, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
             // Save bitmap to PNG
             val bos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
@@ -134,8 +135,8 @@ class SauceNAO {
             return search(apiKey, bitmapData, dbMask, numResult, deDupe, hide)
         }
 
-        fun search(apiKey: String, url: String, dbMask: Long? = null, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
-            val request = createRequestByUrl(apiKey, url, dbMask, numResult, deDupe, hide)
+        fun search(apiKey: String, url: String, dbMask: DBMask? = null, numResult: Int? = null, deDupe: Int? = null, hide: Int? = null) : SaucenaoResult? {
+            val request = createRequestByUrl(apiKey, url, dbMask?.value, numResult, deDupe, hide)
             val responseJson = postRequest(request)
             return responseJson
         }
