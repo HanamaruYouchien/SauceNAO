@@ -13,7 +13,8 @@ fun ProgressBar() {
     CircularProgressIndicator(
         modifier = Modifier.size(12.dp),
         color = Color.Gray,
-        strokeWidth = 2.dp)
+        strokeWidth = 2.dp,
+        )
 }
 
 @Preview

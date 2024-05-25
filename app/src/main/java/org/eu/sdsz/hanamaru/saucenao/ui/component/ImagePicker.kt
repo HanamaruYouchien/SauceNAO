@@ -71,15 +71,21 @@ fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage:
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
-        ){
-            Button(onClick = onSearch) {
-                Text(text = "Search")
-
-                }
+        ) {
+            if (isSearching) {
+                Spacer(modifier = Modifier.width(24.dp))
             }
+            Button(
+                onClick = onSearch,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Text(text = "Search")
+            }
+
             if (isSearching) {
                 Spacer(modifier = Modifier.width(12.dp))
                 ProgressBar()
+            }
         }
     }
 }
