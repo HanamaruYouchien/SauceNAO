@@ -27,11 +27,11 @@ fun ImagePicker(
     onSelectImage: ()->Unit,
     imageUrl: String,
     onUrlChange: (String)->Unit,
-    onSearch: ()->Unit
+    onSearch: ()->Unit,
+    isSearching: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Column (
             modifier = Modifier.fillMaxWidth(),
@@ -66,22 +66,20 @@ fun ImagePicker(
                     textAlign = TextAlign.Left
                 )
             }
+
             if (method) {
                 ImageUrlEntry(url = imageUrl, onValueChange = onUrlChange)
             } else {
                 ImageFileSelector(onClick = onSelectImage)
             }
-
         }
 
-        Button(onClick = onSearch) {
-            Text(text = "Search")
-        }
+        SearchBar(onSearch = onSearch, isSearching = isSearching)
     }
 }
 
 @Preview
 @Composable
 fun PreViewImagePiker() {
-    ImagePicker(false, {}, {}, "https://example.com", {}, {})
+    ImagePicker(false, {}, {}, "https://example.com", {}, {}, true)
 }

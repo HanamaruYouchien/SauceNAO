@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var viewModel: PreferenceViewModel
     private lateinit var getImageFileLauncher: ActivityResultLauncher<PickVisualMediaRequest> // should be placed in activity
     private var imageFile = byteArrayOf()
+    private var isSearching = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +80,7 @@ class MainActivity : ComponentActivity() {
                     toUrl = { openUrl(it) },
                     onSearch = {
                         Log.d("onSearch", "method: $method")
+                        isSearching.value = true
                         MainScope().launch(Dispatchers.IO) {
                             val res = if (method) { SauceNAO.search(viewModel.apiKey, imageUrl) } else { SauceNAO.search(viewModel.apiKey, imageFile) }
                             Log.d("search", "$res")
@@ -96,8 +98,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
+                            isSearching.value = false
                         }
-                    }
+                    },
+                    isSearching = isSearching.value
                 )
             }
         }
@@ -123,6 +127,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
-        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, {})
+        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, {}, false)
     }
 }

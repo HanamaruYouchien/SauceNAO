@@ -32,7 +32,8 @@ fun AppScreen(
     onUrlChange: (String)->Unit,
     resultData: List<SaucenaoResult.Result>,
     toUrl: (String)->Unit,
-    onSearch: ()->Unit
+    onSearch: ()->Unit,
+    isSearching: Boolean
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -65,7 +66,8 @@ fun AppScreen(
                         onSelectImage = onSelectImage,
                         imageUrl = imageUrl,
                         onUrlChange = onUrlChange,
-                        onSearch = onSearch
+                        onSearch = onSearch,
+                        isSearching = isSearching
                     )
                 }
                 AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
@@ -78,5 +80,5 @@ fun AppScreen(
 @Preview
 @Composable
 fun PreviewAppScreen() {
-    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, {})
+    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, {}, false)
 }

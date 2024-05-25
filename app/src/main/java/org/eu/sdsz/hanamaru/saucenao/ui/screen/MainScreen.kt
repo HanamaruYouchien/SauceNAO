@@ -18,7 +18,8 @@ fun MainScreen(
     onSelectImage: ()->Unit,
     imageUrl: String,
     onUrlChange: (String)->Unit,
-    onSearch: ()->Unit
+    onSearch: ()->Unit,
+    isSearching: Boolean
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -28,7 +29,8 @@ fun MainScreen(
                 onSelectImage = onSelectImage,
                 imageUrl = imageUrl,
                 onUrlChange = onUrlChange,
-                onSearch = onSearch
+                onSearch = onSearch,
+                isSearching = isSearching
             )
         }
     }
@@ -37,5 +39,5 @@ fun MainScreen(
 @Preview
 @Composable
 fun PreviewMainScreen() {
-    MainScreen(false, {}, {}, "", {}, {})
+    MainScreen(false, {}, {}, "", {}, {}, false)
 }
