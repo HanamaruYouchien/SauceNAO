@@ -1,6 +1,7 @@
 package org.eu.sdsz.hanamaru.saucenao.data
 
 import com.squareup.moshi.Json
+import java.io.Serializable
 
 val keysTitle = arrayOf(
     "title",
@@ -21,10 +22,11 @@ const val keyCreator = "creator"
 const val keyUrls = "ext_urls"
 const val keyGetchu = "getchu_id"
 
+// data used by rememberSaveable should be Serializable
 data class SaucenaoResult(
     @Json(name = "header")  val header: Header,
     @Json(name = "results") val results: List<Result>?
-) {
+) : Serializable {
     // the only filed required is status
     data class Header(
         @Json(name = "user_id")             val userId: Int?,
@@ -42,19 +44,19 @@ data class SaucenaoResult(
         @Json(name = "query_image_display") val queryImageDisplay: String?,
         @Json(name = "query_image")         val queryImage: String?,
         @Json(name = "results_returned")    val resultsReturned: Int?
-    ) {
+    ) : Serializable {
         data class Index(
             @Json(name = "status")    val status: Int,
             @Json(name = "parent_id") val parentId: Int,
             @Json(name = "id")        val id: Int,
             @Json(name = "results")   val results: Int
-        )
+        ) : Serializable
     }
 
     data class Result(
         @Json(name = "header") val header: Header,
         @Json(name = "data")   val data: Map<String, Any>
-    ) {
+    ) : Serializable {
         data class Header(
             @Json(name = "similarity") val similarity: Float,
             @Json(name = "thumbnail")  val thumbnail: String,
@@ -62,7 +64,7 @@ data class SaucenaoResult(
             @Json(name = "index_name") val indexName: String,
             @Json(name = "dupes")      val dupes: Int,
             @Json(name = "hidden")     val hidden: Int
-        )
+        ) : Serializable
 
         fun getTitle(): String {
             for (key in keysTitle) {
