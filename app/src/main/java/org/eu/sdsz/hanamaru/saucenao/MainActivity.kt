@@ -84,6 +84,10 @@ class MainActivity : ComponentActivity() {
                     resultData = resultData?: listOf(),
                     toUrl = { openUrl(it) },
                     onSearch = {
+                        if (method && imageUrl.value.isEmpty() || !method && imageFile.isEmpty()) {
+                            Toast.makeText(this, "No file or URL", Toast.LENGTH_LONG).show()
+                            return@AppScreen
+                        }
                         Log.d("onSearch", "method: $method")
                         isSearching.value = true
                         MainScope().launch(Dispatchers.IO) {
