@@ -74,7 +74,11 @@ fun ImagePicker(
             }
         }
 
-        SearchBar(onSearch = onSearch, isSearching = isSearching)
+        SearchBar(
+            onSearch = onSearch,
+            isSearching = isSearching,
+            enabled = imageUrl.isNotEmpty() && !isSearching
+        )
     }
 }
 

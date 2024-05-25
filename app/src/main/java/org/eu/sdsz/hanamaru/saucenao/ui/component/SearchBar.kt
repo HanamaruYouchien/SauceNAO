@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchBar(onSearch: ()->Unit, isSearching: Boolean) {
+fun SearchBar(onSearch: ()->Unit, isSearching: Boolean, enabled: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -24,7 +24,8 @@ fun SearchBar(onSearch: ()->Unit, isSearching: Boolean) {
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = onSearch,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically),
+            enabled = enabled
         ) {
             Text(text = "Search")
         }
@@ -44,5 +45,5 @@ fun SearchBar(onSearch: ()->Unit, isSearching: Boolean) {
 @Preview
 @Composable
 fun PreviewProgressBar() {
-    SearchBar({}, true)
+    SearchBar({}, true, true)
 }
