@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit, isSearching: Boolean) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Column (
             modifier = Modifier.fillMaxWidth(),
@@ -59,34 +58,15 @@ fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage:
                     textAlign = TextAlign.Left
                 )
             }
+
             if (method) {
                 ImageUrlEntry(url = imageUrl, onValueChange = onUrlChange)
             } else {
                 ImageFileSelector(onClick = onSelectImage)
             }
-
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (isSearching) {
-                Spacer(modifier = Modifier.width(24.dp))
-            }
-            Button(
-                onClick = onSearch,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Text(text = "Search")
-            }
-
-            if (isSearching) {
-                Spacer(modifier = Modifier.width(12.dp))
-                ProgressBar()
-            }
-        }
+        SearchBar(onSearch = onSearch, isSearching = isSearching)
     }
 }
 
