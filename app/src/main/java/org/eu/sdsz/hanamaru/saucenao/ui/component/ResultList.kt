@@ -8,14 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.lazy.items
 import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 
 @Composable
 fun ResultList(data: List<SaucenaoResult.Result>, toUrl : (String) -> Unit) {
-
     LazyColumn(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         items(data) {
             val urls by rememberSaveable {
