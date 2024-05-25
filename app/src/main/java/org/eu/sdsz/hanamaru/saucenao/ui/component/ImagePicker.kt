@@ -11,7 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit) {
+fun ImagePicker(
+    method: Boolean,
+    onMethodChange: (Boolean)->Unit,
+    onSelectImage: ()->Unit,
+    imageUrl: String,
+    onUrlChange: (String)->Unit,
+    onSearch: ()->Unit
+) {
     Column {
         Row {
             Text(text = "Select a picture or input URL")

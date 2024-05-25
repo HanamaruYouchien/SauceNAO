@@ -34,6 +34,7 @@ data class JsonHeader(
     val resultsReturned: Int?,
 )
 
+// data of rememberSaveable should be Serializable
 data class ResultHeader(
     @Json(name = "similarity")
     val similarity: Float,

@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity() {
                     imageUrl = imageUrl,
                     onUrlChange = { imageUrl = it },
                     resultData = resultData?: listOf(),
+                    toUrl = { openUrl(it) },
                     onSearch = {
                         Log.d("onSearch", "method: $method")
                         MainScope().launch(Dispatchers.IO) {
@@ -97,8 +98,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                    },
-                    toUrl = { openUrl(it) }
+                    }
                 )
             }
         }
