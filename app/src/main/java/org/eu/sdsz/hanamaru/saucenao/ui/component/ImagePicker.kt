@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit) {
+fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit, isSearching: Boolean) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -67,8 +67,19 @@ fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage:
 
         }
 
-        Button(onClick = onSearch) {
-            Text(text = "Search")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Button(onClick = onSearch) {
+                Text(text = "Search")
+
+                }
+            }
+            if (isSearching) {
+                Spacer(modifier = Modifier.width(12.dp))
+                ProgressBar()
         }
     }
 }
@@ -76,5 +87,5 @@ fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage:
 @Preview
 @Composable
 fun PreViewImagePiker() {
-    ImagePicker(false, {}, {}, "https://example.com", {}, {})
+    ImagePicker(false, {}, {}, "https://example.com", {}, {}, true)
 }

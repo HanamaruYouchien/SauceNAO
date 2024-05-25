@@ -24,7 +24,7 @@ import org.eu.sdsz.hanamaru.saucenao.data.Result
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, resultData: List<Result>, onSearch: ()->Unit) {
+fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, resultData: List<Result>, onSearch: ()->Unit, isSearching: Boolean) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -49,7 +49,7 @@ fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey:
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when(appState) {
-                AppState.MAIN -> { MainScreen(method = method, onMethodChange = onMethodChange, onSelectImage = onSelectImage, imageUrl = imageUrl, onUrlChange = onUrlChange, onSearch = onSearch) }
+                AppState.MAIN -> { MainScreen(method = method, onMethodChange = onMethodChange, onSelectImage = onSelectImage, imageUrl = imageUrl, onUrlChange = onUrlChange, onSearch = onSearch, isSearching = isSearching) }
                 AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
                 AppState.RESULT -> { ResultScreen(resultData) }
             }
@@ -60,5 +60,5 @@ fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey:
 @Preview
 @Composable
 fun PreviewAppScreen() {
-    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {})
+    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, false)
 }

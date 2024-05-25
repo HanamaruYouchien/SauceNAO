@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
-import android.security.identity.ResultData
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -35,6 +34,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var viewModel: PreferenceViewModel
     private lateinit var getImageFileLauncher: ActivityResultLauncher<PickVisualMediaRequest> // should be placed in activity
     private var imageFile = byteArrayOf()
+    private var isSearching = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
                     resultData = resultData?: listOf(),
                     onSearch = {
                         Log.d("onSearch", "method: $method")
+                        isSearching.value = true
                         MainScope().launch(Dispatchers.IO) {
                             val res = if (method) { search(viewModel.apiKey, imageUrl) } else { search(viewModel.apiKey, imageFile) }
                             Log.d("search", "$res")
@@ -96,8 +97,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
+                            isSearching.value = false
                         }
-                    }
+                    },
+                    isSearching = isSearching.value
                 )
             }
         }
@@ -118,6 +121,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     SauceNAOTheme {
-        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {})
+        AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, false)
     }
 }
