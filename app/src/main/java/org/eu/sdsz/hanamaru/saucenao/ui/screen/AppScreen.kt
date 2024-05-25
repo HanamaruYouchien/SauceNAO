@@ -10,8 +10,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +20,20 @@ import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey: String, onApiKeySave: (String)->Unit, method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, resultData: List<SaucenaoResult.Result>, onSearch: ()->Unit) {
+fun AppScreen(
+    appState: AppState,
+    onAppStateChange: (AppState)->Unit,
+    curApiKey: String,
+    onApiKeySave: (String)->Unit,
+    method: Boolean,
+    onMethodChange: (Boolean)->Unit,
+    onSelectImage: ()->Unit,
+    imageUrl: String,
+    onUrlChange: (String)->Unit,
+    resultData: List<SaucenaoResult.Result>,
+    toUrl: (String)->Unit,
+    onSearch: ()->Unit
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -45,9 +58,18 @@ fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey:
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when(appState) {
-                AppState.MAIN -> { MainScreen(method = method, onMethodChange = onMethodChange, onSelectImage = onSelectImage, imageUrl = imageUrl, onUrlChange = onUrlChange, onSearch = onSearch) }
+                AppState.MAIN -> {
+                    MainScreen(
+                        method = method,
+                        onMethodChange = onMethodChange,
+                        onSelectImage = onSelectImage,
+                        imageUrl = imageUrl,
+                        onUrlChange = onUrlChange,
+                        onSearch = onSearch
+                    )
+                }
                 AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
-                AppState.RESULT -> { ResultScreen(resultData) }
+                AppState.RESULT -> { ResultScreen(resultData, toUrl = toUrl) }
             }
         }
     }
@@ -56,5 +78,5 @@ fun AppScreen(appState: AppState, onAppStateChange: (AppState)->Unit, curApiKey:
 @Preview
 @Composable
 fun PreviewAppScreen() {
-    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {})
+    AppScreen(AppState.MAIN, {}, "myKey", {}, false, {}, {}, "", {}, listOf(), {}, {})
 }
