@@ -24,9 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
-import org.eu.sdsz.hanamaru.saucenao.data.Result
-import org.eu.sdsz.hanamaru.saucenao.data.STATUS_OK
-import org.eu.sdsz.hanamaru.saucenao.process.search
+import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
+import org.eu.sdsz.hanamaru.saucenao.process.SauceNAO
 import org.eu.sdsz.hanamaru.saucenao.ui.screen.AppScreen
 import org.eu.sdsz.hanamaru.saucenao.ui.theme.SauceNAOTheme
 import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
@@ -61,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(AppState.MAIN)
                 }
                 var resultData by rememberSaveable {
-                    mutableStateOf<List<Result>?>(null)
+                    mutableStateOf<List<SaucenaoResult.Result>?>(null)
                 }
 
                 AppScreen(
@@ -81,14 +80,14 @@ class MainActivity : ComponentActivity() {
                     onSearch = {
                         Log.d("onSearch", "method: $method")
                         MainScope().launch(Dispatchers.IO) {
-                            val res = if (method) { search(viewModel.apiKey, imageUrl) } else { search(viewModel.apiKey, imageFile) }
+                            val res = if (method) { SauceNAO.search(viewModel.apiKey, imageUrl) } else { SauceNAO.search(viewModel.apiKey, imageFile) }
                             Log.d("search", "$res")
                             MainScope().launch(Dispatchers.Main) {
                                 when {
                                     null == res -> {
                                         Toast.makeText(this@MainActivity, "Request Failed. No Network Probably", Toast.LENGTH_LONG).show()
                                     }
-                                    STATUS_OK == res.header.status -> {
+                                    SauceNAO.STATUS_OK == res.header.status -> {
                                         resultData = res.results
                                         appState = AppState.RESULT
                                     }

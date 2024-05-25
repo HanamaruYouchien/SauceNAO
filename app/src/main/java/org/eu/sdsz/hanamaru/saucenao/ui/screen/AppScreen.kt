@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.eu.sdsz.hanamaru.saucenao.data.AppState
-import org.eu.sdsz.hanamaru.saucenao.data.Result
+import org.eu.sdsz.hanamaru.saucenao.data.SaucenaoResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +30,7 @@ fun AppScreen(
     onSelectImage: ()->Unit,
     imageUrl: String,
     onUrlChange: (String)->Unit,
-    resultData: List<Result>,
+    resultData: List<SaucenaoResult.Result>,
     toUrl: (String)->Unit,
     onSearch: ()->Unit
 ) {
