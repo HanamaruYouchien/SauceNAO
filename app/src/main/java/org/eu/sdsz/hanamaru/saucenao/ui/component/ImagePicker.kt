@@ -21,7 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ImagePicker(method: Boolean, onMethodChange: (Boolean)->Unit, onSelectImage: ()->Unit, imageUrl: String, onUrlChange: (String)->Unit, onSearch: ()->Unit) {
+fun ImagePicker(
+    method: Boolean,
+    onMethodChange: (Boolean)->Unit,
+    onSelectImage: ()->Unit,
+    imageUrl: String,
+    onUrlChange: (String)->Unit,
+    onSearch: ()->Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally

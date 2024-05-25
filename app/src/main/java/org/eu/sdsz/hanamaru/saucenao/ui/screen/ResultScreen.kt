@@ -14,10 +14,10 @@ import org.eu.sdsz.hanamaru.saucenao.ui.component.ResultList
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ResultScreen(resultData: List<Result>) {
+fun ResultScreen(resultData: List<Result>, toUrl : (String) -> Unit) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-            ResultList(resultData)
+            ResultList(resultData, toUrl = toUrl)
         }
     }
 }
@@ -25,5 +25,5 @@ fun ResultScreen(resultData: List<Result>) {
 @Preview
 @Composable
 fun PreviewResultScreen() {
-    ResultScreen(listOf())
+    ResultScreen(listOf(), {})
 }
