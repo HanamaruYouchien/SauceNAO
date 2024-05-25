@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
     private var imageFile = byteArrayOf()
     private var isSearching = mutableStateOf(false)
     private var imageUrl = mutableStateOf("")
+    private var imageUrlCache = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +70,12 @@ class MainActivity : ComponentActivity() {
                     curApiKey = viewModel.apiKey,
                     onApiKeySave = { viewModel.apiKey = it },
                     method = method,
-                    onMethodChange = { method = it },
+                    onMethodChange = {
+                        method = it
+                        val tmp = imageUrlCache
+                        imageUrlCache = imageUrl.value
+                        imageUrl.value = tmp
+                    },
                     onSelectImage = { getImageFileLauncher.launch(PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.ImageOnly
                     )) },
