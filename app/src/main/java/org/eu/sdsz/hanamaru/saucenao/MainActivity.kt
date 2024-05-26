@@ -33,10 +33,6 @@ import org.eu.sdsz.hanamaru.saucenao.viewmodel.PreferenceViewModel
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: PreferenceViewModel
     private lateinit var getImageFileLauncher: ActivityResultLauncher<PickVisualMediaRequest> // should be placed in activity
-    private var imageFile = byteArrayOf()
-    private var isSearching = mutableStateOf(false)
-    private var imageUrl = mutableStateOf("")
-    private var imageUrlCache = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +42,8 @@ class MainActivity : ComponentActivity() {
         getImageFileLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if (it != null) {
                 MainScope().launch(Dispatchers.IO) {
-                    imageFile = getFileByUri(it)
-                    imageUrl.value = it.toString()
+                    viewModel.imageFile = getFileByUri(it)
+                    viewModel.setImageUrl(it.toString())
                 }
             }
         }
@@ -72,22 +68,22 @@ class MainActivity : ComponentActivity() {
                     method = method,
                     onMethodChange = {
                         method = it
-                        val tmp = imageUrlCache
-                        imageUrlCache = imageUrl.value
-                        imageUrl.value = tmp
+                        val tmp = viewModel.imageUrlCache
+                        viewModel.imageUrlCache = viewModel.imageUrl.value
+                        viewModel.setImageUrl(tmp)
                     },
                     onSelectImage = { getImageFileLauncher.launch(PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.ImageOnly
                     )) },
-                    imageUrl = imageUrl.value,
-                    onUrlChange = { imageUrl.value = it },
+                    imageUrl = viewModel.imageUrl.value,
+                    onUrlChange = { viewModel.setImageUrl(it) },
                     resultData = resultData?: listOf(),
                     toUrl = { openUrl(it) },
                     onSearch = {
                         Log.d("onSearch", "method: $method")
-                        isSearching.value = true
+                        viewModel.setSearchingState(true)
                         MainScope().launch(Dispatchers.IO) {
-                            val res = if (method) { SauceNAO.search(viewModel.apiKey, imageUrl.value) } else { SauceNAO.search(viewModel.apiKey, imageFile) }
+                            val res = if (method) { SauceNAO.search(viewModel.apiKey, viewModel.imageUrl.value) } else { SauceNAO.search(viewModel.apiKey, viewModel.imageFile) }
                             Log.d("search", "$res")
                             MainScope().launch(Dispatchers.Main) {
                                 when {
@@ -103,10 +99,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                            isSearching.value = false
+                            viewModel.setSearchingState(false)
                         }
                     },
-                    isSearching = isSearching.value
+                    isSearching = viewModel.isSearching.value
                 )
             }
         }

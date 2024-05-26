@@ -2,6 +2,8 @@ package org.eu.sdsz.hanamaru.saucenao.viewmodel
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import org.eu.sdsz.hanamaru.saucenao.R
 
@@ -23,4 +25,20 @@ class PreferenceViewModel(app: Application): AndroidViewModel(app) {
         editor.putString(PREF_FIELD_APIKEY, value)
         editor.apply()
     }
+
+    var imageFile = byteArrayOf()
+
+    private val _isSearching = mutableStateOf(false)
+    val isSearching: State<Boolean> = _isSearching
+    fun setSearchingState(state: Boolean) {
+        _isSearching.value = state
+    }
+
+    private val _imageUrl = mutableStateOf("")
+    val imageUrl: State<String> = _imageUrl
+    fun setImageUrl(url: String) {
+        _imageUrl.value = url
+    }
+
+    var imageUrlCache = ""
 }
