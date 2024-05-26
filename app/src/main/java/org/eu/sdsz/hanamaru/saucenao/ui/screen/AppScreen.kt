@@ -70,7 +70,7 @@ fun AppScreen(
                         isSearching = isSearching
                     )
                 }
-                AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave) }
+                AppState.PREFERENCE -> { PreferenceScreen(curApiKey = curApiKey, onSave = onApiKeySave, toUrl = toUrl) }
                 AppState.RESULT -> { ResultScreen(resultData, toUrl = toUrl) }
             }
         }

@@ -13,10 +13,10 @@ import org.eu.sdsz.hanamaru.saucenao.ui.component.ApikeyEntry
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PreferenceScreen(curApiKey: String, onSave: (String)->Unit) {
+fun PreferenceScreen(curApiKey: String, onSave: (String)->Unit, toUrl: (String)->Unit) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-            ApikeyEntry(curKey = curApiKey, onSave = onSave)
+            ApikeyEntry(curKey = curApiKey, onSave = onSave, toUrl = toUrl)
         }
     }
 }
@@ -24,5 +24,5 @@ fun PreferenceScreen(curApiKey: String, onSave: (String)->Unit) {
 @Preview
 @Composable
 fun PreviewPreferenceScreen() {
-    PreferenceScreen(curApiKey = "myKey") {}
+    PreferenceScreen(curApiKey = "myKey", {}) {}
 }
