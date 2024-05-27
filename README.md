@@ -1,6 +1,6 @@
 # SauceNAO for Android
 
-[中文文档](./README_cn.md)
+[中文文档](./README_zh-cn.md)
 
 A Simple Android App for Calling the [SauceNAO](https://saucenao.com/) Json API
 
